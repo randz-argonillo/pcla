@@ -25,7 +25,7 @@ func (l *List) Complete(i int) error {
 	list := *l
 
 	if i <= 0 || i > len(list) {
-		return fmt.Errorf("item %d does not exist", i)
+		return fmt.Errorf("item %d does not exist. ", i)
 	}
 
 	list[i-1].Done = true
@@ -72,4 +72,19 @@ func (l *List) Get(filename string) error {
 	}
 
 	return json.Unmarshal(content, l)
+}
+
+func (l *List) String() string {
+	format := ""
+
+	for i, t := range *l {
+		doneMark := " "
+		if t.Done {
+			doneMark = "X "
+		}
+
+		format += fmt.Sprintf("%s%d: %s\n", doneMark, i+1, t.Task)
+	}
+
+	return format
 }
