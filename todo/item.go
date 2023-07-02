@@ -1,6 +1,8 @@
 package todo
 
-import "time"
+import (
+	"time"
+)
 
 type item struct {
 	Task        string

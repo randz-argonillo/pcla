@@ -21,7 +21,12 @@ func main() {
 	l := &todo.List{}
 
 	addFlag := flag.Bool("add", false, "Add task flag")
+	delete := flag.Int("del", 0, "Delete a task item")
+
 	listFlag := flag.Bool("list", false, "List all incomplete tasks")
+	listVerboseFlag := flag.Bool("verbose", false, "List tasks verbosely")
+	pendingFlag := flag.Bool("pending", false, "List pending tasks")
+
 	complete := flag.Int("complete", 0, "The task item to be completed")
 
 	flag.Parse()
@@ -31,6 +36,14 @@ func main() {
 	}
 
 	switch {
+	case *listVerboseFlag && *listFlag && *pendingFlag:
+		fmt.Println(l.AllDetails(true))
+	case *listVerboseFlag && *listFlag:
+		fmt.Println(l.AllDetails(false))
+	case *listFlag && *pendingFlag:
+		fmt.Println(l.AllDetails(true))
+	case *listFlag:
+		fmt.Println(l)
 	case *addFlag:
 		t, err := getTask(os.Stdin, flag.Args()...)
 
@@ -43,8 +56,14 @@ func main() {
 		if err = l.Save(todoFilename); err != nil {
 			printErrorAndExit(err)
 		}
-	case *listFlag:
-		fmt.Println(l)
+	case *delete > 0:
+		if err := l.Delete(*delete); err != nil {
+			printErrorAndExit(err)
+		}
+
+		if err := l.Save(todoFilename); err != nil {
+			printErrorAndExit(err)
+		}
 	case *complete > 0:
 		if err := l.Complete(*complete); err != nil {
 			printErrorAndExit(err)

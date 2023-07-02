@@ -78,12 +78,38 @@ func (l *List) String() string {
 	format := ""
 
 	for i, t := range *l {
-		doneMark := " "
+		doneMark := "  "
 		if t.Done {
 			doneMark = "X "
 		}
 
 		format += fmt.Sprintf("%s%d: %s\n", doneMark, i+1, t.Task)
+	}
+
+	return format
+}
+
+func (l *List) AllDetails(pendingOnly bool) string {
+	format := ""
+
+	for i, t := range *l {
+		if pendingOnly && t.Done {
+			continue // exclude done task
+		}
+
+		doneMark := "  "
+		doneDate := ""
+		if t.Done {
+			doneMark = "X "
+			doneDate = fmt.Sprintf("done at %s", t.CompletedAt.Format("Jan 2"))
+		}
+
+		format += fmt.Sprintf("%s%d: %s (created at %s, done at %s)\n",
+			doneMark,
+			i+1,
+			t.Task,
+			t.CreatedAt.Format("Jan 2"),
+			doneDate)
 	}
 
 	return format
