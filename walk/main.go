@@ -11,11 +11,12 @@ import (
 )
 
 type config struct {
-	ext    string    // The file extension to include
-	size   int64     // Minimum file size to include
-	list   bool      // To list the results or not
-	delete bool      // Delete found files
-	delLog io.Writer // Logger for delete operation
+	ext        string    // The file extension to include
+	size       int64     // Minimum file size to include
+	list       bool      // To list the results or not
+	delete     bool      // Delete found files
+	delLog     io.Writer // Logger for delete operation
+	archiveDir string    // Archive directory
 }
 
 func main() {
@@ -25,6 +26,7 @@ func main() {
 	size := flag.Int64("size", 0, "Minimum file size")
 	del := flag.Bool("del", false, "Delete file")
 	delLogFile := flag.String("delLogFile", "", "File to log delete")
+	archiveDir := flag.String("archiveDir", "", "Archive directory")
 
 	flag.Parse()
 
@@ -39,11 +41,12 @@ func main() {
 	}
 
 	c := config{
-		ext:    *ext,
-		size:   *size,
-		list:   *list,
-		delete: *del,
-		delLog: f,
+		ext:        *ext,
+		size:       *size,
+		list:       *list,
+		delete:     *del,
+		delLog:     f,
+		archiveDir: *archiveDir,
 	}
 
 	if err := run(*root, os.Stdout, c); err != nil {
@@ -66,6 +69,12 @@ func run(dir string, output io.Writer, conf config) error {
 
 		if conf.list {
 			return listFile(path, output)
+		}
+
+		if conf.archiveDir != "" {
+			if err := archiveFile(conf.archiveDir, dir, path); err != nil {
+				return err
+			}
 		}
 
 		if conf.delete {
