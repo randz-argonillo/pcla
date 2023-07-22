@@ -1,6 +1,7 @@
 ### How to run
 `go run . <args...>`
-** Arguments **
+
+**Arguments**
 - `--root` the root folder to process
 - `--ext` filter files with the given file extension
 - `--size` minimum file size to search
