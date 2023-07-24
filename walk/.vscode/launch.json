@@ -10,7 +10,7 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}",
-            "args": ["--root", "tmp", "--ext", ".log", "--size", "5"]
+            "args": ["--root", "testdata", "--ext", ".log", "--archiveDir", "testdata/archive"]
         }
     ]
 }

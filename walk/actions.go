@@ -62,16 +62,17 @@ func archiveFile(archiveDir string, root string, file string) error {
 	if err != nil {
 		return err
 	}
+
 	defer outputFile.Close()
+	writer := gzip.NewWriter(outputFile)
+	writer.Name = filepath.Base(file)
 
 	inputFile, err := os.Open(file)
 	if err != nil {
 		return err
 	}
-	defer inputFile.Close()
 
-	writer := gzip.NewWriter(inputFile)
-	writer.Name = filepath.Base(file)
+	defer inputFile.Close()
 
 	if _, err := io.Copy(writer, inputFile); err != nil {
 		return err
